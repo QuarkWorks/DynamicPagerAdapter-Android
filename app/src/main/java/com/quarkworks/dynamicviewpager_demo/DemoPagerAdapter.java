@@ -1,6 +1,7 @@
 package com.quarkworks.dynamicviewpager_demo;
 
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,12 +25,15 @@ public class DemoPagerAdapter extends PagerAdapter {
     public Object instantiateItem(final ViewGroup container, int position) {
         final PagerView pagerView = new PagerView(container.getContext());
 
+        Log.d(TAG, "instantiating: " + position);
+
         pagerView.setViewData(positions.get(position));
 
         pagerView.setPagerViewCallbacks(new PagerView.PagerViewCallbacks() {
             @Override
             public void dismissClicked(int position) {
-                positions.remove(position);
+                Log.wtf(TAG, "destroying: " + position);
+                positions.remove(Integer.valueOf(position));
                 notifyDataSetChanged();
             }
         });
