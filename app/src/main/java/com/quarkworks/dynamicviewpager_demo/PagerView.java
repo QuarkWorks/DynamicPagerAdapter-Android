@@ -56,6 +56,10 @@ public class PagerView extends RelativeLayout {
         textView.setText(String.valueOf(position));
     }
 
+    public int getPosition() {
+        return position;
+    }
+
     public void setPagerViewCallbacks(@Nullable PagerViewCallbacks pagerViewCallbacks) {
         this.pagerViewCallbacks = pagerViewCallbacks;
     }
