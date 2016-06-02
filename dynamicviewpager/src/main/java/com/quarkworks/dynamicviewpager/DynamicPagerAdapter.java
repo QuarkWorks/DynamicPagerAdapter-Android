@@ -72,8 +72,11 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
                  * Get next view (check right first, then left)
                  */
                 View nextView = children.get(position+1);
+                View farNextView = children.get(position+2);
+
                 if(nextView == null) {
                     nextView = children.get(position-1);
+                    farNextView = children.get(position-2);
                 }
 
                 /**
@@ -89,18 +92,26 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
                  */
                 float toXDelta = view.getX() - nextView.getX();
 
-                TranslateAnimation translateAnimation = new TranslateAnimation(0, toXDelta, 0, 0);
-                translateAnimation.setDuration(400);
-                translateAnimation.setFillAfter(true);
+                TranslateAnimation nextViewAnimation = new TranslateAnimation(0, toXDelta, 0, 0);
+                nextViewAnimation.setDuration(400);
+                nextViewAnimation.setFillAfter(true);
 
-                translateAnimation.setAnimationListener(new SimpleAnimationListener() {
+                nextViewAnimation.setAnimationListener(new SimpleAnimationListener() {
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         onDiscardFinishedCallback.onDiscardFinished();
                     }
                 });
 
-                nextView.startAnimation(translateAnimation);
+                TranslateAnimation farNextViewAnimation = new TranslateAnimation(0, toXDelta, 0, 0);
+                farNextViewAnimation.setDuration(400);
+                farNextViewAnimation.setFillAfter(true);
+
+                nextView.startAnimation(nextViewAnimation);
+
+                if(farNextView != null) {
+                    farNextView.startAnimation(farNextViewAnimation);
+                }
             }
         });
 
