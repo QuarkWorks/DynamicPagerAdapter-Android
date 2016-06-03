@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(2);
 
 
-        DemoPagerAdapter2 pagerAdapter = new DemoPagerAdapter2();
+        DemoPagerAdapter pagerAdapter = new DemoPagerAdapter();
         viewPager.setAdapter(pagerAdapter);
     }
 }

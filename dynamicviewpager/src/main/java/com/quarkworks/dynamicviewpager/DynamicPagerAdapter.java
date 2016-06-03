@@ -1,5 +1,7 @@
 package com.quarkworks.dynamicviewpager;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
@@ -133,8 +135,17 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
         nextViewAnimation.setAnimationListener(new SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
+
+                /**
+                 * Notify the callback on the next main loop (prevents screen flash)
+                 */
                 if(onDiscardFinishedCallback != null) {
-                    onDiscardFinishedCallback.onDiscardFinished();
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            onDiscardFinishedCallback.onDiscardFinished();
+                        }
+                    });
                 }
             }
         });
