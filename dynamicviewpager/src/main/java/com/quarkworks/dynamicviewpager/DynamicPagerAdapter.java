@@ -19,10 +19,14 @@ import java.util.WeakHashMap;
 abstract public class DynamicPagerAdapter extends PagerAdapter {
     private static final String TAG = DynamicPagerAdapter.class.getSimpleName();
 
+    public static final int POSITION_NOT_FOUND = -1;
+
     private WeakHashMap<Integer, View> children = new WeakHashMap<>();
 
+    @Nullable private Callbacks callbacks;
+
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public final Object instantiateItem(ViewGroup container, int position) {
         View view = instantiateView(container, position);
         children.put(position, view);
         container.addView(view);
@@ -30,12 +34,12 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public int getItemPosition(Object object) {
+    public final int getItemPosition(Object object) {
         return POSITION_NONE;
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object view) {
+    public final void destroyItem(ViewGroup container, int position, Object view) {
         children.remove(position);
         container.removeView((View) view);
     }
@@ -46,15 +50,51 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
     }
 
     /**
+     * Returns a View for the position provided if cached.
+     *
+     * A limited numbers of Views are cached (default is 5), so this is not too reliable except for
+     * getting the current View or surrounding Views in the ViewPager.
+     */
+    @Nullable public View getViewAt(int position) {
+        return children.get(position);
+    }
+
+    /**
+     * Returns a position in the ViewPager for the View provided if cached.
+     *
+     * A limited numbers of Views are cached (default is 5), so this is not too reliable except for
+     * getting the current View or surrounding Views in the ViewPager.
+     */
+    @Nullable public int getPositionForView(View view) {
+        for(Map.Entry<Integer, View> entry : children.entrySet()) {
+            if(entry.getValue().equals(view)) {
+                return entry.getKey();
+
+            }
+        }
+        return POSITION_NOT_FOUND;
+    }
+
+    /**
+     * This will fade out the View passed in, then call collapseViewsIn() to finish the animation
+     * (resembles a deletion).
+     *
+     * @param position The position of the View to hide and collapse around. You will usually want
+     *                 to use the current item of the ViewPager.
+     */
+    public void discardViewAt(int position) {
+        View view = getViewAt(position);
+        discardView(view);
+    }
+
+    /**
      * This will fade out the View passed in, then call collapseViewsIn() to finish the animation
      * (resembles a deletion).
      *
      * @param view The view to hide and collapse around. You will usually want to use the current
      * item of the ViewPager.
-     * @param onDiscardFinishedCallback This gets called when the animations have finished. If you
-     * are deleting an item, you should remove it from your data set and call notifyDataSetChanged().
      */
-    public void discardView(final View view, @Nullable final OnDiscardFinishedCallback onDiscardFinishedCallback) {
+    public void discardView(final View view) {
 
         AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0.0f);
         alphaAnimation.setDuration(300);
@@ -63,7 +103,7 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
         alphaAnimation.setAnimationListener(new SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
-                collapseViewsIn(view, onDiscardFinishedCallback);
+                collapseViewsIn(view);
             }
         });
 
@@ -76,28 +116,17 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
      *
      * @param view The view to collapse around. You will usually want to use the current item
      * of the ViewPager.
-     * @param onDiscardFinishedCallback This gets called when the animations have finished. If you
-     * are deleting an item, you should remove it from your data set and call notifyDataSetChanged().
      */
-    public void collapseViewsIn(View view, @Nullable final OnDiscardFinishedCallback onDiscardFinishedCallback) {
+    public void collapseViewsIn(final View view) {
 
-        /**
-         * Get position for current View
-         */
-        int position = -1;
-
-        for(Map.Entry<Integer, View> entry : children.entrySet()) {
-            if(entry.getValue().equals(view)) {
-                position = entry.getKey();
-            }
-        }
+        int position = getPositionForView(view);
 
         /**
          * Stop if a position can't be found
          */
-        if(position == -1) {
-            if(onDiscardFinishedCallback != null) {
-                onDiscardFinishedCallback.onDiscardFinished();
+        if(position == POSITION_NOT_FOUND) {
+            if(callbacks != null) {
+                callbacks.onDiscardFinished(position, view);
             }
             return;
         }
@@ -117,8 +146,8 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
          * If it is still null, just discard the current
          */
         if(nextView == null) {
-            if(onDiscardFinishedCallback != null) {
-                onDiscardFinishedCallback.onDiscardFinished();
+            if(callbacks != null) {
+                callbacks.onDiscardFinished(position, view);
             }
             return;
         }
@@ -132,6 +161,7 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
         nextViewAnimation.setDuration(400);
         nextViewAnimation.setFillAfter(true);
 
+        final int pos = position;
         nextViewAnimation.setAnimationListener(new SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
@@ -139,11 +169,11 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
                 /**
                  * Notify the callback on the next main loop (prevents screen flash)
                  */
-                if(onDiscardFinishedCallback != null) {
+                if(callbacks != null) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            onDiscardFinishedCallback.onDiscardFinished();
+                            callbacks.onDiscardFinished(pos, view);
                         }
                     });
                 }
@@ -163,7 +193,11 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
 
     public abstract View instantiateView(ViewGroup container, int position);
 
-    public interface OnDiscardFinishedCallback {
-        void onDiscardFinished();
+    public interface Callbacks {
+        void onDiscardFinished(int position, View view);
+    }
+
+    public void setCallbacks(@Nullable Callbacks callbacks) {
+        this.callbacks = callbacks;
     }
 }
