@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
@@ -118,18 +118,32 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
      */
     public void discardView(final View view) {
 
-        AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0.0f);
-        alphaAnimation.setDuration(300);
-        alphaAnimation.setFillAfter(true);
+//        AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0.0f);
+//        alphaAnimation.setDuration(300);
+//        alphaAnimation.setFillAfter(true);
+//
+//        alphaAnimation.setAnimationListener(new SimpleAnimationListener() {
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//                collapseViewsIn(view);
+//            }
+//        });
+//
+//        view.startAnimation(alphaAnimation);
 
-        alphaAnimation.setAnimationListener(new SimpleAnimationListener() {
+        RealTranslateAnimation translateAnimation = new RealTranslateAnimation(view, 0, 0, 0, -view.getHeight());
+        translateAnimation.setDuration(400);
+        translateAnimation.setFillAfter(true);
+        translateAnimation.setInterpolator(new AccelerateInterpolator());
+
+        translateAnimation.setAnimationListener(new SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
                 collapseViewsIn(view);
             }
         });
 
-        view.startAnimation(alphaAnimation);
+        view.startAnimation(translateAnimation);
         isChildAnimating = true;
     }
 
