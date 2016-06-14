@@ -102,13 +102,11 @@ public class DynamicViewPager extends ViewPager {
                     });
 
                     view.startAnimation(translateAnimation);
-
-                    return true;
                 }
             }
         }
 
-        return super.dispatchTouchEvent(ev);
+        return swipeGestureListener.isScrolling() || super.dispatchTouchEvent(ev);
     }
 
     /**
@@ -142,9 +140,10 @@ public class DynamicViewPager extends ViewPager {
             if(view != null) {
                 view.setTranslationY(initialTransY + difY);
                 isScrolling = true;
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         @Override
