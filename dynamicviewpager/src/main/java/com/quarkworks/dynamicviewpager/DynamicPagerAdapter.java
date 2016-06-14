@@ -26,6 +26,7 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
     public static final int POSITION_NOT_FOUND = -1;
 
     private WeakHashMap<Integer, View> children = new WeakHashMap<>();
+    private boolean isChildAnimating = false;
 
     @Nullable private Callbacks callbacks;
 
@@ -80,6 +81,23 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
     }
 
     /**
+     * You may want to use this to stop gesture detection or other UI elements during animation.
+     *
+     * @return true if a child is in the middle of animating.
+     */
+    public boolean isChildAnimating() {
+        return isChildAnimating;
+    }
+
+    /**
+     * This is only used as a state holder. The DynamicPagerAdapter does not change behavior
+     * due to this variable.
+     */
+    public void setChildAnimating(boolean childAnimating) {
+        isChildAnimating = childAnimating;
+    }
+
+    /**
      * This will fade out the View passed in, then call collapseViewsIn() to finish the animation
      * (resembles a deletion).
      *
@@ -112,6 +130,7 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
         });
 
         view.startAnimation(alphaAnimation);
+        isChildAnimating = true;
     }
 
     /**
@@ -130,6 +149,7 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
          */
         if(position == POSITION_NOT_FOUND) {
             if(callbacks != null) {
+                isChildAnimating = false;
                 callbacks.onDiscardFinished(position, view);
             }
             return;
@@ -151,6 +171,7 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
          */
         if(nextView == null) {
             if(callbacks != null) {
+                isChildAnimating = false;
                 callbacks.onDiscardFinished(position, view);
             }
             return;
@@ -177,6 +198,7 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
+                            isChildAnimating = false;
                             callbacks.onDiscardFinished(pos, view);
                         }
                     });
@@ -193,6 +215,8 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
         if(farNextView != null) {
             farNextView.startAnimation(farNextViewAnimation);
         }
+
+        isChildAnimating = true;
     }
 
     public abstract View instantiateView(ViewGroup container, int position);

@@ -97,16 +97,19 @@ public class DynamicViewPager extends ViewPager {
                         public void onAnimationEnd(Animation animation) {
                             if(deleting) {
                                 dynamicPagerAdapter.collapseViewsIn(view);
+                            } else {
+                                dynamicPagerAdapter.setChildAnimating(false);
                             }
                         }
                     });
 
                     view.startAnimation(translateAnimation);
+                    dynamicPagerAdapter.setChildAnimating(true);
                 }
             }
         }
 
-        return swipeGestureListener.isScrolling() || super.dispatchTouchEvent(ev);
+        return swipeGestureListener.isScrolling() || dynamicPagerAdapter.isChildAnimating() || super.dispatchTouchEvent(ev);
     }
 
     /**
@@ -185,6 +188,7 @@ public class DynamicViewPager extends ViewPager {
                 });
 
                 view.startAnimation(translateAnimation);
+                dynamicPagerAdapter.setChildAnimating(true);
 
                 return true;
             }
