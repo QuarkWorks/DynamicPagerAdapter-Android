@@ -14,6 +14,10 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
+ * A PagerAdapter built to handle dynamic deletion of children with animations. Use discardView()
+ * to start a dismissal animation. collapseViewsIn() is also exposed if you wish to use gestures
+ * to delete items (this gets used in DynamicViewPager, for example).
+ *
  * @author jacobamuchow@gmail.com (Jacob Muchow)
  */
 abstract public class DynamicPagerAdapter extends PagerAdapter {

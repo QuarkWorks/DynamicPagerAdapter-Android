@@ -1,11 +1,14 @@
 package com.quarkworks.dynamicviewpager;
 
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
 /**
+ * Acts on the View's built in translation directly instead of the transformation given by the
+ * Animation. This helps with some of the succeeding animations in the DynamicViewPager and can
+ * be applied elsewhere since it is generic.
+ *
  * @author jacobamuchow@gmail.com (Jacob Muchow)
  */
 public class RealTranslateAnimation extends Animation {

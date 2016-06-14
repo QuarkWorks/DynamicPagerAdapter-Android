@@ -14,6 +14,10 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 
 /**
+ * Listens for swipe and drag-and-drop gestures on children to delete items with animations.
+ * Adapters *must* inherit from DynamicPagerAdapter for this to work, but DynamicPagerAdapter
+ * can be used on its own if the use of gestures is not desired.
+ *
  * @author jacobamuchow@gmail.com (Jacob Muchow)
  */
 public class DynamicViewPager extends ViewPager {
@@ -107,6 +111,9 @@ public class DynamicViewPager extends ViewPager {
         return super.dispatchTouchEvent(ev);
     }
 
+    /**
+     * A GestureListener for swipe gestures
+     */
     private class SwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
 
         private float initialTransY = 0;
@@ -146,6 +153,7 @@ public class DynamicViewPager extends ViewPager {
             if(view == null) {
                 return false;
             }
+
             if(Math.abs(view.getTranslationY()) > 150 && Math.abs(velocityY) > Math.abs(velocityX) && Math.abs(velocityY) > 500.0f) {
 
                 final float actualY = view.getY() + view.getTranslationY();
