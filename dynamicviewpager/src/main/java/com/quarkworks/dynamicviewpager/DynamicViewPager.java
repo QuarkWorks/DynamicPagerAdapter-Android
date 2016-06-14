@@ -61,6 +61,10 @@ public class DynamicViewPager extends ViewPager {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 
+        if(dynamicPagerAdapter.isChildAnimating()) {
+            return true;
+        }
+
         boolean handled = swipeGestureDetector.onTouchEvent(ev);
 
         if(!handled) {
