@@ -76,7 +76,10 @@ public class DynamicViewPager extends ViewPager {
                     final float toYDelta;
                     final boolean deleting;
 
-                    if(Math.abs(view.getTranslationY()) > 150) {
+                    final float screenHeight = getRootView().getHeight();
+                    final float dropBarrier = screenHeight * 0.4f;
+
+                    if(Math.abs(view.getTranslationY()) > dropBarrier) {
                         deleting = true;
 
                         final float actualY = view.getY() + view.getTranslationY();
@@ -168,16 +171,26 @@ public class DynamicViewPager extends ViewPager {
 
             if(Math.abs(view.getTranslationY()) > 150 && Math.abs(deg) <= 30.0 && Math.abs(velocityY) > 500.0f) {
 
-                final float actualY = view.getY() + view.getTranslationY();
+                final float screenHeight = getRootView().getHeight();
                 final float toYDelta;
 
-                if(velocityY < 0) {
-                    toYDelta = -view.getHeight();
+                final float flingSpeedBarrier = screenHeight * 2;
+
+                if(velocityY < -flingSpeedBarrier) {
+                    toYDelta = -screenHeight * 2;
+
+                } else if(velocityY > flingSpeedBarrier) {
+                    toYDelta = screenHeight * 2;
+
                 } else {
-                    toYDelta = actualY + view.getHeight();
+                    return false;
                 }
 
                 float duration = toYDelta / velocityY * 1000.0f;
+
+                if(duration > 400.0f) {
+                    duration = 400.0f;
+                }
 
                 TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 0, toYDelta);
                 translateAnimation.setDuration((long)duration);
