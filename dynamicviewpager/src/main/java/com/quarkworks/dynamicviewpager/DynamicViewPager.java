@@ -132,7 +132,10 @@ public class DynamicViewPager extends ViewPager {
             float difX = e2.getRawX() - e1.getRawX();
             float difY = e2.getRawY() - e1.getRawY();
 
-            if(Math.abs(difX) > Math.abs(difY)) {
+            double rad = Math.tanh((double)(difX / difY));
+            double deg = Math.toDegrees(rad);
+
+            if(Math.abs(deg) > 30.0) {
                 return false;
             }
 
@@ -153,7 +156,10 @@ public class DynamicViewPager extends ViewPager {
                 return false;
             }
 
-            if(Math.abs(view.getTranslationY()) > 150 && Math.abs(velocityY) > Math.abs(velocityX) && Math.abs(velocityY) > 500.0f) {
+            double rad = Math.tanh((double)(velocityX / velocityY));
+            double deg = Math.toDegrees(rad);
+
+            if(Math.abs(view.getTranslationY()) > 150 && Math.abs(deg) <= 30.0 && Math.abs(velocityY) > 500.0f) {
 
                 final float actualY = view.getY() + view.getTranslationY();
                 final float toYDelta;
