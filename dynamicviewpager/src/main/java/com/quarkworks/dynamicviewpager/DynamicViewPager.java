@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
@@ -59,26 +60,51 @@ public class DynamicViewPager extends ViewPager {
         boolean handled = swipeGestureDetector.onTouchEvent(ev);
 
         if(!handled) {
-//            if(ev.getActionMasked() == MotionEvent.ACTION_UP) {
-//                if(swipeGestureListener.isScrolling()) {
-//                    checkCurrentViewPosition();
-//                    return true;
-//                }
-//            }
+            if(ev.getActionMasked() == MotionEvent.ACTION_UP) {
+                final View view = getCurrentView();
+
+                if(view != null && (view.getAnimation() == null || view.getAnimation().hasEnded()) && swipeGestureListener.isScrolling()) {
+
+                    final float toYDelta;
+                    final boolean deleting;
+
+                    if(Math.abs(view.getTranslationY()) > 150) {
+                        deleting = true;
+
+                        final float actualY = view.getY() + view.getTranslationY();
+
+                        if(view.getTranslationY() < 0) {
+                            toYDelta = -view.getHeight();
+                        } else {
+                            toYDelta = actualY + view.getHeight();
+                        }
+                    } else {
+                        deleting = false;
+                        toYDelta = -view.getTranslationY();
+                    }
+
+                    RealTranslateAnimation translateAnimation = new RealTranslateAnimation(view, 0, 0, 0, toYDelta);
+                    translateAnimation.setDuration(400);
+                    translateAnimation.setFillAfter(true);
+                    translateAnimation.setInterpolator(new AccelerateInterpolator());
+
+                    translateAnimation.setAnimationListener(new SimpleAnimationListener() {
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            if(deleting) {
+                                dynamicPagerAdapter.collapseViewsIn(view);
+                            }
+                        }
+                    });
+
+                    view.startAnimation(translateAnimation);
+
+                    return true;
+                }
+            }
         }
 
         return super.dispatchTouchEvent(ev);
-    }
-
-    private void checkCurrentViewPosition() {
-        View currentView = getCurrentView();
-        if(currentView == null) {
-            return;
-        }
-
-        if(Math.abs(currentView.getTranslationY()) > 100) {
-            //Do things
-        }
     }
 
     private class SwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -91,12 +117,6 @@ public class DynamicViewPager extends ViewPager {
             View view = getCurrentView();
             initialTransY = view == null ? 0 : view.getTranslationY();
 
-            isScrolling = false;
-            return true;
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
             isScrolling = false;
             return true;
         }
@@ -126,16 +146,15 @@ public class DynamicViewPager extends ViewPager {
             if(view == null) {
                 return false;
             }
+            if(Math.abs(view.getTranslationY()) > 150 && Math.abs(velocityY) > Math.abs(velocityX) && Math.abs(velocityY) > 500.0f) {
 
-            if(Math.abs(view.getTranslationY()) > 150 && Math.abs(velocityY) > Math.abs(velocityX)) {
-
-                final float viewY = view.getY() + view.getTranslationX();
+                final float actualY = view.getY() + view.getTranslationY();
                 final float toYDelta;
 
                 if(velocityY < 0) {
-                    toYDelta = -(viewY + view.getHeight());
+                    toYDelta = -view.getHeight();
                 } else {
-                    toYDelta = viewY + view.getHeight();
+                    toYDelta = actualY + view.getHeight();
                 }
 
                 float duration = toYDelta / velocityY * 1000.0f;
@@ -153,8 +172,11 @@ public class DynamicViewPager extends ViewPager {
                 });
 
                 view.startAnimation(translateAnimation);
+
+                return true;
             }
-            return true;
+
+            return false;
         }
 
         public boolean isScrolling() {
