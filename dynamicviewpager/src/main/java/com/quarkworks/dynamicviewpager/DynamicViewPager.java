@@ -77,7 +77,7 @@ public class DynamicViewPager extends ViewPager {
                     final boolean deleting;
 
                     final float screenHeight = getRootView().getHeight();
-                    final float dropBarrier = screenHeight * 0.4f;
+                    final float dropBarrier = screenHeight * 0.2f;
 
                     if(Math.abs(view.getTranslationY()) > dropBarrier) {
                         deleting = true;
