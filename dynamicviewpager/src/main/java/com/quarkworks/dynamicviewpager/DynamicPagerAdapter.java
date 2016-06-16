@@ -32,8 +32,18 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
 
     @Override
     public final Object instantiateItem(ViewGroup container, int position) {
-        View view = instantiateView(container, position);
-        children.put(position, view);
+
+        final View view;
+
+        if(children.containsKey(position)) {
+            view = children.get(position);
+        } else {
+            view = instantiateView(container, position);
+            children.put(position, view);
+        }
+
+        updateView(view, position);
+
         container.addView(view);
         return view;
     }
@@ -234,6 +244,7 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
     }
 
     public abstract View instantiateView(ViewGroup container, int position);
+    public abstract void updateView(View view, int position);
 
     public interface Callbacks {
         void onDiscardFinished(int position, View view);

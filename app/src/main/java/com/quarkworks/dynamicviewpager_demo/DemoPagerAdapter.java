@@ -34,8 +34,6 @@ public class DemoPagerAdapter extends DynamicPagerAdapter {
     public View instantiateView(ViewGroup container, int position) {
         final PagerView pagerView = new PagerView(container.getContext());
 
-        pagerView.setViewData(values.get(position));
-
         pagerView.setPagerViewCallbacks(new PagerView.PagerViewCallbacks() {
             @Override
             public void dismissClicked(final int position) {
@@ -44,6 +42,13 @@ public class DemoPagerAdapter extends DynamicPagerAdapter {
         });
 
         return pagerView;
+    }
+
+    @Override
+    public void updateView(View view, int position) {
+        if(view instanceof PagerView) {
+            ((PagerView) view).setViewData(values.get(position));
+        }
     }
 
     @Override
