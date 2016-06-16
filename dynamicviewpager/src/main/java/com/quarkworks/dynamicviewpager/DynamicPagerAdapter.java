@@ -128,33 +128,30 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
      */
     public void discardView(final View view) {
 
-//        AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0.0f);
-//        alphaAnimation.setDuration(300);
-//        alphaAnimation.setFillAfter(true);
-//
-//        alphaAnimation.setAnimationListener(new SimpleAnimationListener() {
-//            @Override
-//            public void onAnimationEnd(Animation animation) {
-//                collapseViewsIn(view);
-//            }
-//        });
-//
-//        view.startAnimation(alphaAnimation);
-
-        RealTranslateAnimation translateAnimation = new RealTranslateAnimation(view, 0, 0, 0, -view.getHeight());
-        translateAnimation.setDuration(400);
-        translateAnimation.setFillAfter(true);
-        translateAnimation.setInterpolator(new AccelerateInterpolator());
-
-        translateAnimation.setAnimationListener(new SimpleAnimationListener() {
+        startDiscardAnimation(view, new SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
                 collapseViewsIn(view);
             }
         });
 
-        view.startAnimation(translateAnimation);
         isChildAnimating = true;
+    }
+
+    /**
+     * This method should be used to create a discard animation and start it on the View provided.
+     * You can override it to use your own animation if you desire. Remember to 1) set the animation
+     * listener so the adapter will be updated and 2) start the animation.
+     */
+    protected void startDiscardAnimation(View view, Animation.AnimationListener animationListener) {
+
+        RealTranslateAnimation translateAnimation = new RealTranslateAnimation(view, 0, 0, 0, -view.getHeight());
+        translateAnimation.setDuration(400);
+        translateAnimation.setFillAfter(true);
+        translateAnimation.setInterpolator(new AccelerateInterpolator());
+        translateAnimation.setAnimationListener(animationListener);
+
+        view.startAnimation(translateAnimation);
     }
 
     /**
@@ -204,14 +201,9 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
         /**
          * Start collapsing animations
          */
-        float toXDelta = view.getX() - nextView.getX();
-
-        TranslateAnimation nextViewAnimation = new TranslateAnimation(0, toXDelta, 0, 0);
-        nextViewAnimation.setDuration(400);
-        nextViewAnimation.setFillAfter(true);
-
         final int pos = position;
-        nextViewAnimation.setAnimationListener(new SimpleAnimationListener() {
+
+        startNextViewAnimation(position, view, nextView, new SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
 
@@ -230,17 +222,45 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
             }
         });
 
+        if(farNextView != null) {
+            startFarNextViewAnimation(position, view, nextView, farNextView);
+        }
+
+        isChildAnimating = true;
+    }
+
+    /**
+     * This method should be used to start the animation for the next View to move in after the
+     * current view has been discarded. You can override it in order to create your own animation if you desire.
+     * Remember to 1) set the animation listener so the adapter will be updated and 2) start the animation.
+     */
+    protected void startNextViewAnimation(final int currentPos, View currentView, View nextView, Animation.AnimationListener animationListener) {
+
+        float toXDelta = currentView.getX() - nextView.getX();
+
+        TranslateAnimation nextViewAnimation = new TranslateAnimation(0, toXDelta, 0, 0);
+        nextViewAnimation.setDuration(400);
+        nextViewAnimation.setFillAfter(true);
+        nextViewAnimation.setAnimationListener(animationListener);
+
+        nextView.startAnimation(nextViewAnimation);
+    }
+
+    /**
+     * This method should be used to start the animation for the far next View to move in after the
+     * current view has been discarded. You can override it in order to create your own animation if you desire.
+     * Remember to start the animation.
+     */
+    protected void startFarNextViewAnimation(final int currentPos, View currentView, View nextView, View farNextView) {
+
+        //Same translation distance as nextView
+        float toXDelta = currentView.getX() - nextView.getX();
+
         TranslateAnimation farNextViewAnimation = new TranslateAnimation(0, toXDelta, 0, 0);
         farNextViewAnimation.setDuration(400);
         farNextViewAnimation.setFillAfter(true);
 
-        nextView.startAnimation(nextViewAnimation);
-
-        if(farNextView != null) {
-            farNextView.startAnimation(farNextViewAnimation);
-        }
-
-        isChildAnimating = true;
+        farNextView.startAnimation(farNextViewAnimation);
     }
 
     public abstract View instantiateView(ViewGroup container, int position);
