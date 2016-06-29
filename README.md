@@ -1,7 +1,3 @@
-# DynamicViewPager
-
-Includes extensions of the Android support ViewPager and PagerAdapter, DynamicViewPager and DynamicPagerAdapter.
-
 ## DynamicPagerAdapter
 
 The DynamicPagerAdapter handles View caching and data set changes in a much more friendly way, as well as animations for dismissal of items in the ViewPager. These animations can be overriden to supply your own custom animations if you desire. DynamicPagerAdapter can be used with any ViewPager and is not dependent on the DynamicViewPager.
