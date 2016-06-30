@@ -54,6 +54,10 @@ public class DynamicViewPager extends ViewPager {
         super.setAdapter(adapter);
     }
 
+    public DynamicPagerAdapter getDynamicPagerAdapter() {
+        return dynamicPagerAdapter;
+    }
+
     @Nullable public View getCurrentView() {
         return dynamicPagerAdapter.getViewAt(getCurrentItem());
     }
