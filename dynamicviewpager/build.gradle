@@ -26,3 +26,19 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.2.0'
 }
+
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+// build a jar with javadoc
+//task javadocJar(type: Jar, dependsOn: Javadoc) {
+//    classifier = 'javadoc'
+//}
+
+artifacts {
+    archives sourcesJar
+//    archives javadocJar
+}
