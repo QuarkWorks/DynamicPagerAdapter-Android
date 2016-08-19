@@ -32,7 +32,7 @@ public class PagerAdapter extends DynamicPagerAdapter {
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup container, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup container, int position, int viewType) {
         final PagerCardView pagerCardView = new PagerCardView(container.getContext());
 
         pagerCardView.setPagerViewCallbacks(new PagerCardView.PagerViewCallbacks() {

@@ -66,7 +66,7 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
         }
 
         if (viewHolder == null) {
-            viewHolder = onCreateViewHolder(container, viewType);
+            viewHolder = onCreateViewHolder(container, position, viewType);
             viewHolder.viewType = viewType;
             children.put(position, viewHolder);
         }
@@ -77,7 +77,7 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
         return viewHolder.view;
     }
 
-    public abstract VH onCreateViewHolder(ViewGroup container, int viewType);
+    public abstract VH onCreateViewHolder(ViewGroup container, int position, int viewType);
 
     public abstract void onBindViewHolder(VH viewHolder, int position);
 
