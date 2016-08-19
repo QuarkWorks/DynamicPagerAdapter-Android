@@ -17,12 +17,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".single_view_type.SingleViewTypePagerActivity"
+        <activity android:name=".single_view_type.PagerActivity"
             android:label="@string/single_view_type">
 
         </activity>
 
-        <activity android:name=".multi_view_type.MultiViewTypePagerActivity"
+        <activity android:name=".multi_view_type.PagerActivity"
             android:label="@string/multi_view_type">
 
         </activity>

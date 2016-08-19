@@ -67,6 +67,7 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
 
         if (viewHolder == null) {
             viewHolder = onCreateViewHolder(container, viewType);
+            viewHolder.viewType = viewType;
             children.put(position, viewHolder);
         }
 

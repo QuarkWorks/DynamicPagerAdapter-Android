@@ -1,6 +1,7 @@
-package com.quarkworks.dynamicviewpager_demo.single_view_type;
+package com.quarkworks.dynamicviewpager_demo.multi_view_type;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -13,35 +14,37 @@ import com.quarkworks.dynamicviewpager_demo.R;
 /**
  * @author jacobamuchow@gmail.com (Jacob Muchow)
  */
-public class PagerView extends RelativeLayout {
-    private static final String TAG = PagerView.class.getSimpleName();
+public class GreenCardView extends RelativeLayout {
+    private static final String TAG = GreenCardView.class.getSimpleName();
 
     private int position = 0;
 
     private TextView textView;
 
-    @Nullable private PagerViewCallbacks pagerViewCallbacks;
+    @Nullable
+    private PagerViewCallbacks pagerViewCallbacks;
 
-    public PagerView(Context context) {
+    public GreenCardView(Context context) {
         super(context);
         initialize();
     }
 
-    public PagerView(Context context, AttributeSet attrs) {
+    public GreenCardView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize();
     }
 
-    public PagerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public GreenCardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize();
     }
 
     private void initialize() {
-        LayoutInflater.from(getContext()).inflate(R.layout.pager_view, this);
+        LayoutInflater.from(getContext()).inflate(R.layout.pager_card_view, this);
 
-        textView = (TextView) findViewById(R.id.pager_view_text_id);
-        View dismissButton = findViewById(R.id.pager_view_dismiss_button_id);
+        View cardContainer = findViewById(R.id.pager_card_view_card_container);
+        textView = (TextView) findViewById(R.id.pager_card_view_text);
+        View dismissButton = findViewById(R.id.pager_card_view_dismiss_button);
 
         dismissButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -51,6 +54,8 @@ public class PagerView extends RelativeLayout {
                 }
             }
         });
+
+        cardContainer.setBackgroundColor(Color.GREEN);
     }
 
     public void setViewData(int position) {

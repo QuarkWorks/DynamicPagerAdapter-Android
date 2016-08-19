@@ -12,26 +12,26 @@ import com.quarkworks.dynamicviewpager_demo.R;
 /**
  * @author jacobamuchow@gmail.com (Jacob Muchow)
  */
-public class SingleViewTypePagerActivity extends AppCompatActivity {
-    private static final String TAG = SingleViewTypePagerActivity.class.getSimpleName();
+public class PagerActivity extends AppCompatActivity {
+    private static final String TAG = PagerActivity.class.getSimpleName();
 
     public static Intent newIntent(Context context) {
-        return new Intent(context, SingleViewTypePagerActivity.class);
+        return new Intent(context, PagerActivity.class);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.simple_pager_activity);
+        setContentView(R.layout.pager_activity);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.simple_pager_activity_view_pager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.pager_activity_view_pager);
 
         viewPager.setPageMarginDrawable(null);
         viewPager.setPageMargin(30);
         viewPager.setOffscreenPageLimit(2);
 
 
-        DemoPagerAdapter pagerAdapter = new DemoPagerAdapter();
+        PagerAdapter pagerAdapter = new PagerAdapter();
         viewPager.setAdapter(pagerAdapter);
     }
 }

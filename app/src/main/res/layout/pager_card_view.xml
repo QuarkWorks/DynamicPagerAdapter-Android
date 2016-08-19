@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/pager_card_view_card_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="60dp"
@@ -18,13 +19,16 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/pager_view_text_id"
+                android:id="@+id/pager_card_view_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+
+                android:textSize="24sp"
+                android:textStyle="bold"/>
 
             <Button
-                android:id="@+id/pager_view_dismiss_button_id"
+                android:id="@+id/pager_card_view_dismiss_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 

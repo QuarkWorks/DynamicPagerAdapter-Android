@@ -10,11 +10,12 @@ import java.util.ArrayList;
 /**
  * @author jacobamuchow@gmail.com (Jacob Muchow)
  */
-public class DemoPagerAdapter extends DynamicPagerAdapter {
+public class PagerAdapter extends DynamicPagerAdapter {
+    private static final String TAG = PagerAdapter.class.getSimpleName();
 
     private ArrayList<Integer> values = new ArrayList<>();
 
-    public DemoPagerAdapter() {
+    public PagerAdapter() {
         for(int i = 0; i < 30; i++) {
             values.add(i);
         }
@@ -32,23 +33,23 @@ public class DemoPagerAdapter extends DynamicPagerAdapter {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup container, int viewType) {
-        final PagerView pagerView = new PagerView(container.getContext());
+        final PagerCardView pagerCardView = new PagerCardView(container.getContext());
 
-        pagerView.setPagerViewCallbacks(new PagerView.PagerViewCallbacks() {
+        pagerCardView.setPagerViewCallbacks(new PagerCardView.PagerViewCallbacks() {
             @Override
             public void dismissClicked(int position) {
-                discardView(pagerView);
+                discardView(pagerCardView);
             }
         });
 
-        return new ViewHolder(pagerView) {};
+        return new ViewHolder(pagerCardView) {};
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        PagerView pagerView = (PagerView) viewHolder.view;
+        PagerCardView pagerCardView = (PagerCardView) viewHolder.view;
 
-        pagerView.setViewData(values.get(position));
+        pagerCardView.setViewData(values.get(position));
     }
 
     @Override

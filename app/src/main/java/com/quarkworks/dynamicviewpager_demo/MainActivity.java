@@ -5,8 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.quarkworks.dynamicviewpager_demo.multi_view_type.MultiViewTypePagerActivity;
-import com.quarkworks.dynamicviewpager_demo.single_view_type.SingleViewTypePagerActivity;
+import com.quarkworks.dynamicviewpager_demo.multi_view_type.PagerActivity;
 
 /**
  * @author jacobamuchow@gmail.com
@@ -32,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private final View.OnClickListener singleClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = SingleViewTypePagerActivity.newIntent(MainActivity.this);
+            Intent intent = com.quarkworks.dynamicviewpager_demo.single_view_type.PagerActivity.newIntent(MainActivity.this);
             startActivity(intent);
         }
     };
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private final View.OnClickListener multiClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = MultiViewTypePagerActivity.newIntent(MainActivity.this);
+            Intent intent = PagerActivity.newIntent(MainActivity.this);
             startActivity(intent);
         }
     };

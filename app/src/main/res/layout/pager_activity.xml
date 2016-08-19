@@ -5,12 +5,12 @@
     android:layout_height="match_parent">
 
     <com.quarkworks.dynamicviewpager.helpers.PagerContainer
-        android:id="@+id/simple_pager_activity_pager_container"
+        android:id="@+id/pager_activity_pager_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.quarkworks.dynamicviewpager.DynamicViewPager
-            android:id="@+id/simple_pager_activity_view_pager"
+            android:id="@+id/pager_activity_view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
