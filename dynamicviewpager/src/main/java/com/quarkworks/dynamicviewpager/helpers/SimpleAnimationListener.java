@@ -1,4 +1,4 @@
-package com.quarkworks.dynamicviewpager;
+package com.quarkworks.dynamicviewpager.helpers;
 
 import android.view.animation.Animation;
 

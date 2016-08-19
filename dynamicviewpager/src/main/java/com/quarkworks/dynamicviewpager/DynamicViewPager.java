@@ -13,6 +13,9 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 
+import com.quarkworks.dynamicviewpager.helpers.RealTranslateAnimation;
+import com.quarkworks.dynamicviewpager.helpers.SimpleAnimationListener;
+
 /**
  * Listens for swipe and drag-and-drop gestures on children to delete items with animations.
  * Adapters *must* inherit from DynamicPagerAdapter for this to work, but DynamicPagerAdapter

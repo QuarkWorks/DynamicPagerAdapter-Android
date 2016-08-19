@@ -1,4 +1,4 @@
-package com.quarkworks.dynamicviewpager_demo;
+package com.quarkworks.dynamicviewpager.helpers;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
  * <p/>
  * Structured after https://gist.github.com/devunwired/8cbe094bb7a783e37ad1
  *
- * @author temple@hello.com (Benjamin Temple)
+ * @author ben.temple@gmail.com (Benjamin Temple)
  */
 public class PagerContainer extends FrameLayout implements ViewPager.OnPageChangeListener {
     private static final String TAG = PagerContainer.class.getSimpleName();

@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.quarkworks.dynamicviewpager_demo.PagerContainer
-        android:id="@+id/main_pager_container_id"
+    <com.quarkworks.dynamicviewpager.helpers.PagerContainer
+        android:id="@+id/simple_pager_activity_pager_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.quarkworks.dynamicviewpager.DynamicViewPager
-            android:id="@+id/main_view_pager_id"
+            android:id="@+id/simple_pager_activity_view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -19,6 +19,6 @@
 
             android:clipChildren="false"/>
 
-    </com.quarkworks.dynamicviewpager_demo.PagerContainer>
+    </com.quarkworks.dynamicviewpager.helpers.PagerContainer>
 
 </RelativeLayout>

@@ -10,6 +10,9 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
+import com.quarkworks.dynamicviewpager.helpers.RealTranslateAnimation;
+import com.quarkworks.dynamicviewpager.helpers.SimpleAnimationListener;
+
 import java.util.Map;
 import java.util.WeakHashMap;
 

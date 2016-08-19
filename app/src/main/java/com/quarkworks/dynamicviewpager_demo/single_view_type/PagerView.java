@@ -1,4 +1,4 @@
-package com.quarkworks.dynamicviewpager_demo;
+package com.quarkworks.dynamicviewpager_demo.single_view_type;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.quarkworks.dynamicviewpager_demo.R;
 
 /**
  * @author jacobamuchow@gmail.com (Jacob Muchow)

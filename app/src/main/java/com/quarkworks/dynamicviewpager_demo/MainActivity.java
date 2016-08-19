@@ -1,24 +1,47 @@
 package com.quarkworks.dynamicviewpager_demo;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
+import com.quarkworks.dynamicviewpager_demo.multi_view_type.MultiViewTypePagerActivity;
+import com.quarkworks.dynamicviewpager_demo.single_view_type.SingleViewTypePagerActivity;
+
+/**
+ * @author jacobamuchow@gmail.com
+ */
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_activity);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.main_view_pager_id);
+        View singleButton = findViewById(R.id.main_activity_single_button);
+        View multiButton = findViewById(R.id.main_activity_multi_button);
 
-        viewPager.setPageMarginDrawable(null);
-        viewPager.setPageMargin(30);
-        viewPager.setOffscreenPageLimit(2);
-
-
-        DemoPagerAdapter pagerAdapter = new DemoPagerAdapter();
-        viewPager.setAdapter(pagerAdapter);
+        singleButton.setOnClickListener(singleClickListener);
+        multiButton.setOnClickListener(multiClickListener);
     }
+
+    /**
+     * Listeners
+     */
+    private final View.OnClickListener singleClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = SingleViewTypePagerActivity.newIntent(MainActivity.this);
+            startActivity(intent);
+        }
+    };
+
+    private final View.OnClickListener multiClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = MultiViewTypePagerActivity.newIntent(MainActivity.this);
+            startActivity(intent);
+        }
+    };
 }
