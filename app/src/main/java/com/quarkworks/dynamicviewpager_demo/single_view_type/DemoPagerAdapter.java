@@ -22,7 +22,7 @@ public class DemoPagerAdapter extends DynamicPagerAdapter {
         setCallbacks(new Callbacks() {
             @Override
             public void onDiscardFinished(int position, View view) {
-                if(position != POSITION_NOT_FOUND) {
+                if(position != NO_POSITION) {
                     values.remove(position);
                 }
                 notifyDataSetChanged();
@@ -31,24 +31,24 @@ public class DemoPagerAdapter extends DynamicPagerAdapter {
     }
 
     @Override
-    public View instantiateView(ViewGroup container, int position) {
+    public ViewHolder onCreateViewHolder(ViewGroup container, int viewType) {
         final PagerView pagerView = new PagerView(container.getContext());
 
         pagerView.setPagerViewCallbacks(new PagerView.PagerViewCallbacks() {
             @Override
-            public void dismissClicked(final int position) {
+            public void dismissClicked(int position) {
                 discardView(pagerView);
             }
         });
 
-        return pagerView;
+        return new ViewHolder(pagerView) {};
     }
 
     @Override
-    public void updateView(View view, int position) {
-        if(view instanceof PagerView) {
-            ((PagerView) view).setViewData(values.get(position));
-        }
+    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+        PagerView pagerView = (PagerView) viewHolder.view;
+
+        pagerView.setViewData(values.get(position));
     }
 
     @Override

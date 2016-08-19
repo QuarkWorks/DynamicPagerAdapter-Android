@@ -23,12 +23,29 @@ import java.util.WeakHashMap;
  *
  * @author jacobamuchow@gmail.com (Jacob Muchow)
  */
-abstract public class DynamicPagerAdapter extends PagerAdapter {
+abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHolder> extends PagerAdapter {
     private static final String TAG = DynamicPagerAdapter.class.getSimpleName();
 
-    public static final int POSITION_NOT_FOUND = -1;
+    /**
+     * Used to denote an invalid position for a View
+     */
+    public static final int NO_POSITION = -1;
 
-    private WeakHashMap<Integer, View> children = new WeakHashMap<>();
+    /**
+     * To use multiple view types, override {@link #getViewType(int)}
+     */
+    public static final int DEFAULT_VIEW_TYPE = -1;
+
+    public static abstract class ViewHolder {
+        public final View view;
+        public int viewType = DEFAULT_VIEW_TYPE;
+
+        public ViewHolder(View view) {
+            this.view = view;
+        }
+    }
+
+    private WeakHashMap<Integer, VH> children = new WeakHashMap<>();
     private boolean isChildAnimating = false;
 
     @Nullable private Callbacks callbacks;
@@ -36,20 +53,32 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
     @Override
     public final Object instantiateItem(ViewGroup container, int position) {
 
-        final View view;
+        VH viewHolder = null;
+        int viewType = getViewType(position);
 
         if(children.containsKey(position)) {
-            view = children.get(position);
-        } else {
-            view = instantiateView(container, position);
-            children.put(position, view);
+            viewHolder = children.get(position);
+
+            if(viewHolder.viewType != viewType) {
+                destroyItem(container, position, viewHolder.view);
+                viewHolder = null;
+            }
         }
 
-        updateView(view, position);
+        if (viewHolder == null) {
+            viewHolder = onCreateViewHolder(container, viewType);
+            children.put(position, viewHolder);
+        }
 
-        container.addView(view);
-        return view;
+        onBindViewHolder(viewHolder, position);
+
+        container.addView(viewHolder.view);
+        return viewHolder.view;
     }
+
+    public abstract VH onCreateViewHolder(ViewGroup container, int viewType);
+
+    public abstract void onBindViewHolder(VH viewHolder, int position);
 
     @Override
     public final int getItemPosition(Object object) {
@@ -67,13 +96,29 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
         return view == object;
     }
 
+    public int getViewType(int position) {
+        return DEFAULT_VIEW_TYPE;
+    }
+
     /**
-     * Returns a View for the position provided if cached.
+     * Returns a View for the position provided if cached. Take a look at
+     * {@link #getViewHolderAt(int)} or more details.
+     */
+    @Nullable
+    public View getViewAt(int position) {
+        VH viewHolder = getViewHolderAt(position);
+        return viewHolder == null ? null : viewHolder.view;
+    }
+
+
+    /**
+     * Returns a ViewHolder for the position provided if cached.
      *
      * A limited numbers of Views are cached (default is 5), so this is not too reliable except for
      * getting the current View or surrounding Views in the ViewPager.
      */
-    @Nullable public View getViewAt(int position) {
+    @Nullable
+    public VH getViewHolderAt(int position) {
         return children.get(position);
     }
 
@@ -83,14 +128,23 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
      * A limited numbers of Views are cached (default is 5), so this is not too reliable except for
      * getting the current View or surrounding Views in the ViewPager.
      */
-    @Nullable public int getPositionForView(View view) {
-        for(Map.Entry<Integer, View> entry : children.entrySet()) {
-            if(entry.getValue().equals(view)) {
+    public int getPositionForViewHolder(VH viewHolder) {
+        return getPositionForView(viewHolder.view);
+    }
+
+    public int getPositionForView(@Nullable View view) {
+        if(view == null) {
+            return NO_POSITION;
+        }
+
+        for(Map.Entry<Integer, VH> entry : children.entrySet()) {
+            if(entry.getValue().view.equals(view)) {
                 return entry.getKey();
 
             }
         }
-        return POSITION_NOT_FOUND;
+
+        return NO_POSITION;
     }
 
     /**
@@ -116,10 +170,11 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
      *
      * @param position The position of the View to hide and collapse around. You will usually want
      *                 to use the current item of the ViewPager.
+     *
+     * @return True if a discard animation was started for the View.
      */
-    public void discardViewAt(int position) {
-        View view = getViewAt(position);
-        discardView(view);
+    public boolean discardViewAt(int position) {
+        return discardView(getViewAt(position));
     }
 
     /**
@@ -128,25 +183,35 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
      *
      * @param view The view to hide and collapse around. You will usually want to use the current
      * item of the ViewPager.
+     *
+     * @return True if a discard animation was started for the View.
      */
-    public void discardView(final View view) {
+    public boolean discardView(@Nullable final View view) {
+        if (view == null) {
+            return false;
+        }
 
-        startDiscardAnimation(view, new SimpleAnimationListener() {
+        isChildAnimating = startDiscardAnimation(view, new SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
                 collapseViewsIn(view);
             }
         });
 
-        isChildAnimating = true;
+        return isChildAnimating;
     }
 
     /**
      * This method should be used to create a discard animation and start it on the View provided.
      * You can override it to use your own animation if you desire. Remember to 1) set the animation
      * listener so the adapter will be updated and 2) start the animation.
+     *
+     * @return True if the a discard animation was started for the View.
      */
-    protected void startDiscardAnimation(View view, Animation.AnimationListener animationListener) {
+    protected boolean startDiscardAnimation(@Nullable View view, Animation.AnimationListener animationListener) {
+        if (view == null) {
+            return false;
+        }
 
         RealTranslateAnimation translateAnimation = new RealTranslateAnimation(view, 0, 0, 0, -view.getHeight());
         translateAnimation.setDuration(400);
@@ -155,6 +220,7 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
         translateAnimation.setAnimationListener(animationListener);
 
         view.startAnimation(translateAnimation);
+        return true;
     }
 
     /**
@@ -163,42 +229,47 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
      *
      * @param view The view to collapse around. You will usually want to use the current item
      * of the ViewPager.
+     *
+     * @return True if a collapse animation was started for the View.
      */
-    public void collapseViewsIn(final View view) {
+    public boolean collapseViewsIn(@Nullable final View view) {
+        if (view == null) {
+            return false;
+        }
 
         int position = getPositionForView(view);
 
         /**
          * Stop if a position can't be found
          */
-        if(position == POSITION_NOT_FOUND) {
+        if(position == NO_POSITION) {
             if(callbacks != null) {
                 isChildAnimating = false;
                 callbacks.onDiscardFinished(position, view);
             }
-            return;
+            return false;
         }
 
         /**
          * Get next view (check right first, then left)
          */
-        View nextView = children.get(position+1);
-        View farNextView = children.get(position+2);
+        View nextView = getViewAt(position+1);
+        View farNextView = getViewAt(position+2);
 
         if(nextView == null) {
-            nextView = children.get(position-1);
-            farNextView = children.get(position-2);
+            nextView = getViewAt(position-1);
+            farNextView = getViewAt(position-2);
         }
 
         /**
-         * If it is still null, just discard the current
+         * If it is still null, just discard the current View.
          */
         if(nextView == null) {
             if(callbacks != null) {
                 isChildAnimating = false;
                 callbacks.onDiscardFinished(position, view);
             }
-            return;
+            return false;
         }
 
         /**
@@ -230,6 +301,7 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
         }
 
         isChildAnimating = true;
+        return true;
     }
 
     /**
@@ -265,9 +337,6 @@ abstract public class DynamicPagerAdapter extends PagerAdapter {
 
         farNextView.startAnimation(farNextViewAnimation);
     }
-
-    public abstract View instantiateView(ViewGroup container, int position);
-    public abstract void updateView(View view, int position);
 
     public interface Callbacks {
         void onDiscardFinished(int position, View view);
