@@ -33,12 +33,6 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
 }
 
-// build a jar with javadoc
-//task javadocJar(type: Jar, dependsOn: Javadoc) {
-//    classifier = 'javadoc'
-//}
-
 artifacts {
     archives sourcesJar
-//    archives javadocJar
 }
