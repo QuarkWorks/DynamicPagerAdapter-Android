@@ -17,9 +17,11 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * A PagerAdapter built to handle dynamic deletion of children with animations. Use discardView()
+ * A PagerAdapter for ViewPager that keeps a cache of ViewHolders. The data set can be updated
+ * dynamically and items can be removed with animations if desired. Use discardView()
  * to start a dismissal animation. collapseViewsIn() is also exposed if you wish to use gestures
- * to delete items (this gets used in DynamicViewPager, for example).
+ * to delete items (ex. fling a View off the screen, then call collapseViewsIn(view) to start the
+ * collapsing animation - this is done in DynamicViewPager).
  *
  * @author jacobamuchow@gmail.com (Jacob Muchow)
  */
@@ -45,19 +47,19 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
         }
     }
 
-    private WeakHashMap<Integer, VH> children = new WeakHashMap<>();
-    private boolean isChildAnimating = false;
+    private WeakHashMap<Integer, VH> viewHolderCache = new WeakHashMap<>();
+    private boolean isViewAnimating = false;
 
     @Nullable private Callbacks callbacks;
 
     @Override
-    public final Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(ViewGroup container, int position) {
 
         VH viewHolder = null;
         int viewType = getViewType(position);
 
-        if(children.containsKey(position)) {
-            viewHolder = children.get(position);
+        if(viewHolderCache.containsKey(position)) {
+            viewHolder = viewHolderCache.get(position);
 
             if(viewHolder.viewType != viewType) {
                 destroyItem(container, position, viewHolder.view);
@@ -68,7 +70,7 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
         if (viewHolder == null) {
             viewHolder = onCreateViewHolder(container, position, viewType);
             viewHolder.viewType = viewType;
-            children.put(position, viewHolder);
+            viewHolderCache.put(position, viewHolder);
         }
 
         onBindViewHolder(viewHolder, position);
@@ -82,13 +84,16 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
     public abstract void onBindViewHolder(VH viewHolder, int position);
 
     @Override
-    public final int getItemPosition(Object object) {
+    public int getItemPosition(Object object) {
         return POSITION_NONE;
     }
 
+    /**
+     * Removes a View from its container and the cache
+     */
     @Override
-    public final void destroyItem(ViewGroup container, int position, Object view) {
-        children.remove(position);
+    public void destroyItem(ViewGroup container, int position, Object view) {
+        viewHolderCache.remove(position);
         container.removeView((View) view);
     }
 
@@ -102,6 +107,19 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
     }
 
     /**
+     * A non-destructive way to "notify data set changed". By default, when {@link #notifyDataSetChanged()}
+     * is called, the ViewPager will destroy all the Views and recreate them if {@link #getItemPosition(Object)}
+     * returns POSITION_NONE. This may not be desirable behavior in some cases. This method will call
+     * {@link #onBindViewHolder(ViewHolder, int)} on each of the cached ViewHolders in order to
+     * update them without destroying the Views.
+     */
+    public void updateViews() {
+        for (Map.Entry<Integer, VH> entry : viewHolderCache.entrySet()) {
+            onBindViewHolder(entry.getValue(), entry.getKey());
+        }
+    }
+
+    /**
      * Returns a View for the position provided if cached. Take a look at
      * {@link #getViewHolderAt(int)} or more details.
      */
@@ -111,7 +129,6 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
         return viewHolder == null ? null : viewHolder.view;
     }
 
-
     /**
      * Returns a ViewHolder for the position provided if cached.
      *
@@ -120,7 +137,7 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
      */
     @Nullable
     public VH getViewHolderAt(int position) {
-        return children.get(position);
+        return viewHolderCache.get(position);
     }
 
     /**
@@ -138,7 +155,7 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
             return NO_POSITION;
         }
 
-        for(Map.Entry<Integer, VH> entry : children.entrySet()) {
+        for(Map.Entry<Integer, VH> entry : viewHolderCache.entrySet()) {
             if(entry.getValue().view.equals(view)) {
                 return entry.getKey();
 
@@ -149,20 +166,27 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
     }
 
     /**
+     * @return the cache of ViewHolders
+     */
+    protected WeakHashMap<Integer, VH> getViewHolderCache() {
+        return viewHolderCache;
+    }
+
+    /**
      * You may want to use this to stop gesture detection or other UI elements during animation.
      *
      * @return true if a child is in the middle of animating.
      */
-    public boolean isChildAnimating() {
-        return isChildAnimating;
+    public boolean isViewAnimating() {
+        return isViewAnimating;
     }
 
     /**
      * This is only used as a state holder. The DynamicPagerAdapter does not change behavior
      * due to this variable.
      */
-    public void setChildAnimating(boolean childAnimating) {
-        isChildAnimating = childAnimating;
+    public void setViewAnimating(boolean viewAnimating) {
+        isViewAnimating = viewAnimating;
     }
 
     /**
@@ -192,14 +216,14 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
             return false;
         }
 
-        isChildAnimating = startDiscardAnimation(view, new SimpleAnimationListener() {
+        isViewAnimating = startDiscardAnimation(view, new SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
                 collapseViewsIn(view);
             }
         });
 
-        return isChildAnimating;
+        return isViewAnimating;
     }
 
     /**
@@ -245,7 +269,7 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
          */
         if(position == NO_POSITION) {
             if(callbacks != null) {
-                isChildAnimating = false;
+                isViewAnimating = false;
                 callbacks.onDiscardFinished(position, view);
             }
             return false;
@@ -267,7 +291,7 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
          */
         if(nextView == null) {
             if(callbacks != null) {
-                isChildAnimating = false;
+                isViewAnimating = false;
                 callbacks.onDiscardFinished(position, view);
             }
             return false;
@@ -289,7 +313,7 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            isChildAnimating = false;
+                            isViewAnimating = false;
                             callbacks.onDiscardFinished(pos, view);
                         }
                     });
@@ -301,7 +325,7 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
             startFarNextViewAnimation(position, view, nextView, farNextView);
         }
 
-        isChildAnimating = true;
+        isViewAnimating = true;
         return true;
     }
 
