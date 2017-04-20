@@ -23,20 +23,20 @@ import com.quarkworks.dynamicviewpager.helpers.SimpleAnimationListener;
  *
  * @author jacobamuchow@gmail.com (Jacob Muchow)
  */
-public class DynamicViewPager extends ViewPager {
-    private static final String TAG = DynamicViewPager.class.getSimpleName();
+public class SwipeRemovalViewPager extends ViewPager {
+    private static final String TAG = SwipeRemovalViewPager.class.getSimpleName();
 
     private DynamicPagerAdapter dynamicPagerAdapter;
 
     private GestureDetector swipeGestureDetector;
     private SwipeGestureListener swipeGestureListener;
 
-    public DynamicViewPager(Context context) {
+    public SwipeRemovalViewPager(Context context) {
         super(context);
         initialize();
     }
 
-    public DynamicViewPager(Context context, AttributeSet attrs) {
+    public SwipeRemovalViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize();
     }

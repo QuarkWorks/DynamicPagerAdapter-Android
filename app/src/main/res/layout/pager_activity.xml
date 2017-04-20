@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.quarkworks.dynamicviewpager.DynamicViewPager
+        <com.quarkworks.dynamicviewpager.SwipeRemovalViewPager
             android:id="@+id/pager_activity_view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
