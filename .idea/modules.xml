@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DynamicViewPager-Android.iml" filepath="$PROJECT_DIR$/DynamicViewPager-Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dynamicviewpager/dynamicviewpager.iml" filepath="$PROJECT_DIR$/dynamicviewpager/dynamicviewpager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicpageradapter/dynamicpageradapter.iml" filepath="$PROJECT_DIR$/dynamicpageradapter/dynamicpageradapter.iml" />
     </modules>
   </component>
 </project>
