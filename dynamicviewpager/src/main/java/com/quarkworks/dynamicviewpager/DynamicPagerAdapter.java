@@ -238,7 +238,19 @@ abstract public class DynamicPagerAdapter<VH extends DynamicPagerAdapter.ViewHol
             return false;
         }
 
-        RealTranslateAnimation translateAnimation = new RealTranslateAnimation(view, 0, 0, 0, -view.getHeight());
+        //Use the root view height for the animation if possible. This should be enough to get the view off the screen.
+        //Otherwise, just use double the view's height (this is just a fallback, so not too worried about
+        //the arbitrary number).
+        final int transY;
+        View rootView = view.getRootView();
+        if (rootView != null && rootView.getHeight() > view.getHeight()) {
+            transY = -rootView.getHeight();
+        } else {
+            transY = -view.getHeight() * 2;
+        }
+
+        
+        RealTranslateAnimation translateAnimation = new RealTranslateAnimation(view, 0, 0, 0, transY);
         translateAnimation.setDuration(400);
         translateAnimation.setFillAfter(true);
         translateAnimation.setInterpolator(new AccelerateInterpolator());
