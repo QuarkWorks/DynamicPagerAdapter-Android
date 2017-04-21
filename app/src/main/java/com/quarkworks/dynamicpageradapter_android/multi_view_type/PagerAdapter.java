@@ -1,4 +1,4 @@
-package com.quarkworks.dynamicviewpager_demo.multi_view_type;
+package com.quarkworks.dynamicpageradapter_android.multi_view_type;
 
 import android.view.View;
 import android.view.ViewGroup;

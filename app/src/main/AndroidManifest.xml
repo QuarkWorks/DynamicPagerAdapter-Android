@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.quarkworks.dynamicviewpager_demo">
+    package="com.quarkworks.dynamicpageradapter_android">
 
     <application
         android:allowBackup="true"
@@ -17,15 +17,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".single_view_type.PagerActivity"
-            android:label="@string/single_view_type">
+        <activity android:name=".single_view_type.SinglePagerActivity"
+            android:label="@string/single_view_type" />
 
-        </activity>
+        <activity android:name=".multi_view_type.MultiPagerActivity"
+            android:label="@string/multi_view_type" />
 
-        <activity android:name=".multi_view_type.PagerActivity"
-            android:label="@string/multi_view_type">
-
-        </activity>
     </application>
 
 </manifest>

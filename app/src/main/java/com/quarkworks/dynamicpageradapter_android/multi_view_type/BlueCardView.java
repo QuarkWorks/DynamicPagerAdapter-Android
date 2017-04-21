@@ -1,4 +1,4 @@
-package com.quarkworks.dynamicviewpager_demo.multi_view_type;
+package com.quarkworks.dynamicpageradapter_android.multi_view_type;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -9,13 +9,13 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.quarkworks.dynamicviewpager_demo.R;
+import com.quarkworks.dynamicpageradapter_android.R;
 
 /**
  * @author jacobamuchow@gmail.com (Jacob Muchow)
  */
-public class GreenCardView extends RelativeLayout {
-    private static final String TAG = GreenCardView.class.getSimpleName();
+public class BlueCardView extends RelativeLayout {
+    private static final String TAG = BlueCardView.class.getSimpleName();
 
     private int position = 0;
 
@@ -24,17 +24,17 @@ public class GreenCardView extends RelativeLayout {
     @Nullable
     private PagerViewCallbacks pagerViewCallbacks;
 
-    public GreenCardView(Context context) {
+    public BlueCardView(Context context) {
         super(context);
         initialize();
     }
 
-    public GreenCardView(Context context, AttributeSet attrs) {
+    public BlueCardView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize();
     }
 
-    public GreenCardView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BlueCardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize();
     }
@@ -55,7 +55,7 @@ public class GreenCardView extends RelativeLayout {
             }
         });
 
-        cardContainer.setBackgroundColor(Color.GREEN);
+        cardContainer.setBackgroundColor(Color.BLUE);
     }
 
     public void setViewData(int position) {

@@ -1,11 +1,12 @@
-package com.quarkworks.dynamicviewpager_demo;
+package com.quarkworks.dynamicpageradapter_android;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.quarkworks.dynamicviewpager_demo.multi_view_type.PagerActivity;
+import com.quarkworks.dynamicpageradapter_android.multi_view_type.MultiPagerActivity;
+import com.quarkworks.dynamicpageradapter_android.single_view_type.SinglePagerActivity;
 
 /**
  * @author jacobamuchow@gmail.com
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private final View.OnClickListener singleClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = com.quarkworks.dynamicviewpager_demo.single_view_type.PagerActivity.newIntent(MainActivity.this);
+            Intent intent = SinglePagerActivity.newIntent(MainActivity.this);
             startActivity(intent);
         }
     };
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private final View.OnClickListener multiClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = PagerActivity.newIntent(MainActivity.this);
+            Intent intent = MultiPagerActivity.newIntent(MainActivity.this);
             startActivity(intent);
         }
     };

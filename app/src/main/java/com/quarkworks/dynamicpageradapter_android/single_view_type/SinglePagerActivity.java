@@ -1,4 +1,4 @@
-package com.quarkworks.dynamicviewpager_demo.multi_view_type;
+package com.quarkworks.dynamicpageradapter_android.single_view_type;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,16 +7,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
-import com.quarkworks.dynamicviewpager_demo.R;
+import com.quarkworks.dynamicpageradapter_android.R;
 
 /**
  * @author jacobamuchow@gmail.com (Jacob Muchow)
  */
-public class PagerActivity extends AppCompatActivity {
-    private static final String TAG = PagerActivity.class.getSimpleName();
+public class SinglePagerActivity extends AppCompatActivity {
+    private static final String TAG = SinglePagerActivity.class.getSimpleName();
 
     public static Intent newIntent(Context context) {
-        return new Intent(context, PagerActivity.class);
+        return new Intent(context, SinglePagerActivity.class);
     }
 
     @Override
