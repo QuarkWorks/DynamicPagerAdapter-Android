@@ -13,7 +13,7 @@ The DynamicPagerAdapter extends Android's PagerAdapter to do four important thin
 
 #### MyPagerAdapter.java
 
-```
+```java
 public class MyPagerAdapter extends DynamicPagerAdapter {
 
     private List<Integer> values;
@@ -48,7 +48,7 @@ public class MyPagerAdapter extends DynamicPagerAdapter {
 
 #### SinglePagerActivity.java
 
-```
+```java
     private MyPagerAdapter pagerAdapter;
     private List<Integer> values;
 
@@ -80,7 +80,7 @@ This ViewPager subclass leverages the DynamicPagerAdapter to call fold animation
 
 Once you have the DynamicPagerAdapter set up, using the DynamicViewPager is as easy as changing the ViewPager reference in XML to SwipeRemovalViewPager.
 
-```
+```xml
 <com.quarkworks.dynamicviewpager.SwipeRemovalViewPager
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -99,8 +99,7 @@ This is a layout wrapper for ViewPagers that we have modified over the years. It
 ```
 allprojects {
         repositories {
-        ...
-        maven { url "https://jitpack.io" }
+            maven { url "https://jitpack.io" }
         }
     }
 }
