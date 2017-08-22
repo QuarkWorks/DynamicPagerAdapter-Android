@@ -94,7 +94,7 @@ This is a layout wrapper for ViewPagers that we have modified over the years. It
 
 # Including with Gradle
 
-1. Add the JitPack repositorycneter to your project build.gradle:
+1. Add the JitPack repository center to your project build.gradle:
 
 ```
 allprojects {

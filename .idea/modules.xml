@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/DynamicPagerAdapter.iml" filepath="$PROJECT_DIR$/DynamicPagerAdapter.iml" />
       <module fileurl="file://$PROJECT_DIR$/DynamicPagerAdapter-Android.iml" filepath="$PROJECT_DIR$/DynamicPagerAdapter-Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicpageradapter/dynamicpageradapter.iml" filepath="$PROJECT_DIR$/dynamicpageradapter/dynamicpageradapter.iml" />
       <module fileurl="file://$PROJECT_DIR$/dynamicpageradapter/dynamicpageradapter.iml" filepath="$PROJECT_DIR$/dynamicpageradapter/dynamicpageradapter.iml" />
     </modules>
   </component>
